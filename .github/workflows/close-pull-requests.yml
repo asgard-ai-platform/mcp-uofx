@@ -1,0 +1,25 @@
+name: Close Pull Requests
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  close:
+    name: Close pull request
+    runs-on: ubuntu-latest
+    if: ${{ !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) }}
+
+    steps:
+      - name: Close pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          AUTHOR_ASSOCIATION: ${{ github.event.pull_request.author_association }}
+        run: |
+          gh pr close "$PR_URL" --comment "Thanks for your interest. This repository only accepts pull requests from maintainers or collaborators with direct access. Your association is $AUTHOR_ASSOCIATION. Please open an issue instead so maintainers can discuss the request and decide how to proceed."

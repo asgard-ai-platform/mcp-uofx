@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for contributing to `mcp-uofx`.
+Thanks for contributing to `mcp-uofx`. This repository accepts issues for bug reports, feature requests, and discussion. Pull requests are accepted only from maintainers or collaborators with direct repository access.
 
 ## Development Setup
 
@@ -17,11 +17,11 @@ Use environment variables or `.env` for local credentials. Do not commit real cr
 - `tests/test_imports.py` is the public smoke test.
 - `tests/manual/` contains integration scripts that require a real UOF X environment.
 - `docs/` contains public documentation.
-- `docs/internal/` is ignored and must not be published.
+- Internal notes, generated reports, and environment-specific data must not be added or published.
 
 ## Checks
 
-Run the lightweight checks before opening a pull request:
+Run the lightweight checks before proposing a change in an issue:
 
 ```bash
 uv run python tests/test_imports.py
@@ -30,12 +30,13 @@ uv run python -m compileall src tests
 
 Manual integration scripts may mutate remote state, send notifications, or create records. Review each script before running it.
 
-## Pull Request Guidelines
+## Contribution Policy
 
-- Keep changes focused and minimal.
-- Update README or docs when behavior, setup, tool names, or commands change.
+- Open an issue before proposing behavior, API, documentation, or packaging changes.
+- Pull requests from users without direct repository access are closed automatically.
+- Keep proposed changes focused and minimal.
+- Include sanitized examples, logs, or reproduction steps when relevant.
 - Prefer environment variables over hardcoded users, departments, forms, URLs, or company codes.
-- Avoid adding generated reports or local IDE files.
 
 ## Public Repository Hygiene
 
