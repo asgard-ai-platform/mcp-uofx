@@ -1,9 +1,13 @@
 # MCP UOF X
 
 [![CI](https://github.com/asgard-ai-platform/mcp-uofx/actions/workflows/ci.yml/badge.svg)](https://github.com/asgard-ai-platform/mcp-uofx/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/mcp-uofx.svg)](https://pypi.org/project/mcp-uofx/)
+[![Python versions](https://img.shields.io/pypi/pyversions/mcp-uofx.svg)](https://pypi.org/project/mcp-uofx/)
 [![GitHub tag](https://img.shields.io/github/v/tag/asgard-ai-platform/mcp-uofx)](https://github.com/asgard-ai-platform/mcp-uofx/tags)
+[![GitHub stars](https://img.shields.io/github/stars/asgard-ai-platform/mcp-uofx)](https://github.com/asgard-ai-platform/mcp-uofx/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/asgard-ai-platform/mcp-uofx)](https://github.com/asgard-ai-platform/mcp-uofx/issues)
+[![GitHub last commit](https://img.shields.io/github/last-commit/asgard-ai-platform/mcp-uofx)](https://github.com/asgard-ai-platform/mcp-uofx/commits/main)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
 [![MCP](https://img.shields.io/badge/MCP-compatible-blue)](https://modelcontextprotocol.io/)
 
 Model Context Protocol server for UOF X Total Solution. Exposes curated UOF X APIs as AI-callable tools for BPM, organization lookup, agent delegation, punch records, DMS search, ISO documents, notifications, and questionnaires.
@@ -12,14 +16,14 @@ Model Context Protocol server for UOF X Total Solution. Exposes curated UOF X AP
 
 Part of the [Asgard AI Platform](https://github.com/asgard-ai-platform) open-source ecosystem.
 
-## Features
+## What This Does
 
 - **23 MCP tools** covering workflow, organization, document, notification, questionnaire, and attendance use cases
 - **API key and OAuth modes** for service-level and user-level integrations
 - **stdio and SSE transports** for local MCP clients and HTTP-based integrations
 - **Public-safe configuration** through environment variables and `.env.example`
 
-## Tools
+## Tools (23)
 
 Tool names are registered with the `uofx_custom_` prefix.
 
@@ -36,7 +40,13 @@ See [docs/tools.md](docs/tools.md) for the full public tool reference.
 
 ## Quick Start
 
-### Clone and install locally
+### Install
+
+```bash
+pip install mcp-uofx
+```
+
+For local development:
 
 ```bash
 git clone https://github.com/asgard-ai-platform/mcp-uofx.git
@@ -89,7 +99,7 @@ uv run mcp-uofx-login --status
 uv run mcp-uofx-login --logout
 ```
 
-### Claude Desktop Integration
+### Use with Claude Desktop
 
 Example configuration:
 
@@ -106,6 +116,20 @@ Example configuration:
 ```
 
 More examples are available in [examples/](examples/).
+
+### Use with Claude Code
+
+After installing the package and configuring environment variables, add the stdio MCP server:
+
+```bash
+claude mcp add uofx -- mcp-uofx
+```
+
+For a local checkout, run it through `uv` from the repository directory:
+
+```bash
+claude mcp add uofx -- uv --directory /path/to/mcp-uofx run mcp-uofx
+```
 
 ## Usage Examples
 
