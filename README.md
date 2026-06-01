@@ -133,29 +133,118 @@ claude mcp add uofx -- uv --directory /path/to/mcp-uofx run mcp-uofx
 
 ## Usage Examples
 
-Once the MCP server is running and connected to your AI assistant, you can interact with UOF X using natural language.
-
-### Check Pending Tasks
-
-**You:** "Show my pending approval tasks."
-
-**AI:** I found your pending UOF X approval tasks and summarized the task titles, form names, applicants, and available links based on your configured permissions.
+The following are actual test conversations recorded against the UOF X test environment (demox3.edetw.com).
 
 ---
 
-### Search Documents
+### Scenario 1: Missing Punch Detection
 
-**You:** "Search DMS for documents related to the onboarding policy."
+The UOF X punch report API only returns records for employees who did clock in. Employees who never clocked in are absent from the response entirely—not present as null values.
 
-**AI:** I searched the configured UOF X DMS folders and returned matching documents with metadata that your account is allowed to access.
+**Context:** A department manager wants to check whether anyone on the dev team forgot to clock in this month.
+
+```
+使用者：開發組五月份有人缺刷嗎？
+
+AI：⚠️ 部門 DEPT_IT_DEV 疑似缺刷 125 筆：
+    - it_dev_01 - 開發工程師 - 林前端 (2026-05-01): 未打卡 (0 次)
+    - it_dev_01 - 開發工程師 - 林前端 (2026-05-02): 未打卡 (0 次)
+    - it_dev_02 - 開發工程師 - 黃後端 (2026-05-01): 未打卡 (0 次)
+    ⋯（共 125 筆，涵蓋全月工作日 × 6 位組員）
+```
+
+The tool fetches the full department roster (6 members) from the organization API, then computes a set difference against the punch report—surfacing completely absent employees that the vendor API would never return. Passing the raw API result to the AI would only show employees who did clock in, silently missing anyone who skipped entirely.
 
 ---
 
-### Inspect Organization Data
+### Scenario 2: Agent Delegation
 
-**You:** "Find the manager and employees for department SALES."
+The UOF X delegation API rejects new time slots that overlap with existing ones with a 400 error. Most users don't know to delete old settings first; setting directly will fail.
 
-**AI:** I queried UOF X organization APIs and returned the department manager plus the department employee list, scoped to the configured API key or OAuth user.
+**Context:** A manager is going on a three-day business trip next week and wants to delegate approvals to a colleague.
+
+```
+使用者：我下週一到三要出差，幫我把簽核代理給黃後端。
+
+AI：⚙️ 查詢現有代理設定... 找到 1 筆舊時段。
+    ✅ 已清除舊時間段
+    ✅ 已清除舊代理人
+    📋 確認可代理表單：事假單、（未命名）⋯
+    ✅ 成功將代理人設定為 it_dev_02（黃後端）
+    ✅ 成功新增代理時間：2026-06-06 00:00 ～ 2026-06-08 23:59
+    ⚙️ 驗證：代理設定已生效。
+```
+
+The no-overlap constraint is documented in the tool description. The AI reads it before making any calls and automatically sequences: query → delete old settings → set new values → verify. The user never sees the 400 error.
+
+---
+
+### Scenario 3: Department Broadcast
+
+Sending a notification to an entire department requires two steps at the API level: fetch the employee list, then send individually. These actions span two separate modules.
+
+**Context:** An IT lead needs to notify the entire department before a scheduled maintenance window.
+
+```
+使用者：通知資訊部全體員工，今晚 10 點停機維護。
+
+AI：部門 DEPT_IT_DEV 共有 6 位員工：
+    黃後端 (it_dev_02)、吳全端 (it_dev_03)、蔡測試 (it_dev_04)⋯
+    ✅ 成功發送通知給 3 位使用者。
+    通知標題：今晚 10 點系統停機維護通知
+```
+
+Fetching the employee list and dispatching notifications are chained inside the tool. A single sentence spans the organization and notification modules.
+
+---
+
+### Scenario 4: Conversational Form Lifecycle
+
+A full BPM form lifecycle: submission, compliance check, follow-up, and approval.
+
+#### 4-1. Employee Submits Leave
+
+**Context:** An employee wants to take half a day off and expresses it in one sentence.
+
+```
+使用者：我要請今天下午的事假。
+
+AI：📋 查詢可申請表單... 找到：事假單 (代碼: DMSGENDOC)
+    📝 查詢欄位規格：
+       - [C003] 原因 (type: text) (必填)
+       - [C006] 文件歸檔 (type: archivist) ⚠️系統元件，略過
+    ✅ 成功為 it_dev_01 發起表單 DMSGENDOC
+       追蹤 ID: c086e05abbe1814b3e462b46f27c459f
+```
+
+#### 4-2. Manager Review with Compliance Check
+
+**Context:** The manager wants to approve leave requests but asks the AI to verify that applicants have set a delegation first.
+
+```
+使用者：有多少待簽的假單？幫我檢查有沒有設代理。
+
+AI：✅ 查詢待簽任務清單
+    ✅ 對每位申請人進行代理人狀態交叉檢查
+    📋 合規判斷：
+       - 已設代理者 → 推薦簽結
+       - 未設代理者 → 暫緩，發通知提醒設定
+    💡 提供 UOF X 簽核連結供主管直接進入系統操作
+```
+
+#### 4-3. Employee Sets Delegation
+
+**Context:** An employee receives the follow-up notification and asks the AI to set up delegation.
+
+```
+使用者：我收到提醒要設代理，幫我設定。
+
+AI：✅ 設定代理人與代理時段
+    ✅ 驗證設定已生效
+    ✅ 推播通知主管「已完成代理設定，可簽結」
+```
+
+The complete lifecycle spans: list forms → inspect fields → submit → compliance check → follow-up → configure delegation → notify. These steps chain BPM, delegation, and notification modules together.
 
 ## Project Structure
 
