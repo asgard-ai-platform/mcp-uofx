@@ -1,0 +1,12 @@
+{
+  "servers": {
+    "uofx": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "mcp-uofx"],
+      "env": {
+        "UOFX_DEV_MODE": "true"
+      }
+    }
+  }
+}
