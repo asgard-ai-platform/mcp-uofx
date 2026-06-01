@@ -1,0 +1,74 @@
+# ──────────────────────────────────────────────
+# 敏感資訊 (Secrets & Credentials)
+# ──────────────────────────────────────────────
+# 環境變數（含 API Key、OAuth Client Secret 等）
+.env
+.env.*
+!.env.example
+
+# OAuth Token 持久化檔案
+.auth.json
+**/.auth.json
+
+# ──────────────────────────────────────────────
+# Python
+# ──────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Type checking cache
+.mypy_cache/
+.pytype/
+.ruff_cache/
+
+# ──────────────────────────────────────────────
+# 工具生成的報告（可重新產生）
+# ──────────────────────────────────────────────
+full-tools-report.md
+mcp-server/full-tools-report.md
+docs/full-tools-report.md
+tests/manual/*report*.md
+
+# ──────────────────────────────────────────────
+# macOS
+# ──────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ──────────────────────────────────────────────
+# VS Code（選擇性）
+# ──────────────────────────────────────────────
+# .vscode/ 整個目錄可依需求解除註解
+# .vscode/
+.idea/
+
+# ──────────────────────────────────────────────
+# 測試暫存
+# ──────────────────────────────────────────────
+.agents/
+.vscode
+.pytest_cache/
+.coverage
+htmlcov/
+references/
+mcp-official-test/
+scenarios/update_mvp.py
+.copilot-instructions.md
+AGENTS.md
