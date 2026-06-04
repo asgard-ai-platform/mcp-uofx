@@ -1,6 +1,6 @@
 [project]
 name = "mcp-uofx"
-version = "0.1.0"
+version = "0.1.1"
 description = "Custom MCP server for UOF X Total Solution"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -29,6 +29,11 @@ dependencies = [
     "uvicorn>=0.48.0",
     "sse-starlette>=3.4.4",
 ]
+
+[project.urls]
+Homepage = "https://github.com/asgard-ai-platform/mcp-uofx"
+Repository = "https://github.com/asgard-ai-platform/mcp-uofx"
+Issues = "https://github.com/asgard-ai-platform/mcp-uofx/issues"
 
 [project.scripts]
 mcp-uofx = "mcp_uofx.server:main"
